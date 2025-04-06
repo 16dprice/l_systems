@@ -12,7 +12,7 @@ use configurations::{l_system_configurations::{
 use l_system_drawing::l_system_drawing::get_l_system_lines;
 
 use macroquad::prelude::*;
-use ui::{colors::get_rainbow_color, input::handle_input, telemetry::{draw_custom_telemetry_data, CustomTelemetryData}};
+use ui::{colors::{get_rainbow_color, interpolate_colors}, input::handle_input, telemetry::{draw_custom_telemetry_data, CustomTelemetryData}};
 
 fn main_conf() -> Conf {
     Conf {
@@ -71,24 +71,13 @@ async fn main() {
             let mut final_color_percentage = color_percentage + runtime_configuration.color_percentage_offset;
             while final_color_percentage > 1.0 { final_color_percentage -= 1.0; }
 
-            let start = BLUE;
-            let end = PINK;
-
-            // let r = (1.0 - color_percentage) * start.r + color_percentage * end.r;
-            // let g = (1.0 - color_percentage) * start.g + color_percentage * end.g;
-            // let b = (1.0 - color_percentage) * start.b + color_percentage * end.b;
-
-            let r = (1.0 - final_color_percentage) * start.r + final_color_percentage * end.r;
-            let g = (1.0 - final_color_percentage) * start.g + final_color_percentage * end.g;
-            let b = (1.0 - final_color_percentage) * start.b + final_color_percentage * end.b;
+            let line_color = interpolate_colors(BLUE, PINK, final_color_percentage);
+            // let line_color = get_rainbow_color(final_color_percentage);
 
             draw_line(
                 line[0].x, line[0].y,
                 line[1].x, line[1].y,
-                2.0,
-                Color { r, g, b, a: 1.0 },
-                // WHITE,
-                // get_rainbow_color(final_color_percentage)
+                2.0, line_color,
             );
         }
         let for_loop_time = SystemTime::now().duration_since(time_start).unwrap().as_micros();

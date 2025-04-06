@@ -42,3 +42,12 @@ pub fn get_rainbow_color(percentage: f32) -> Color {
         a: (1.0 - color_percentage) * start.a + color_percentage * end.a,
     }
 }
+
+pub fn interpolate_colors(start: Color, end: Color, percentage: f32) -> Color {
+    let r = (1.0 - percentage) * start.r + percentage * end.r;
+    let g = (1.0 - percentage) * start.g + percentage * end.g;
+    let b = (1.0 - percentage) * start.b + percentage * end.b;
+    let a = (1.0 - percentage) * start.a + percentage * end.a;
+
+    return Color { r, g, b, a };
+}
