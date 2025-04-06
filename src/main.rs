@@ -71,8 +71,8 @@ async fn main() {
             let mut final_color_percentage = color_percentage + runtime_configuration.color_percentage_offset;
             while final_color_percentage > 1.0 { final_color_percentage -= 1.0; }
 
-            let start = RED;
-            let end = BLACK;
+            let start = BLUE;
+            let end = PINK;
 
             // let r = (1.0 - color_percentage) * start.r + color_percentage * end.r;
             // let g = (1.0 - color_percentage) * start.g + color_percentage * end.g;
@@ -86,9 +86,9 @@ async fn main() {
                 line[0].x, line[0].y,
                 line[1].x, line[1].y,
                 2.0,
-                // Color { r, g, b, a: 1.0 },
+                Color { r, g, b, a: 1.0 },
                 // WHITE,
-                get_rainbow_color(final_color_percentage)
+                // get_rainbow_color(final_color_percentage)
             );
         }
         let for_loop_time = SystemTime::now().duration_since(time_start).unwrap().as_micros();
