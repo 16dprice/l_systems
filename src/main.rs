@@ -25,7 +25,7 @@ fn main_conf() -> Conf {
 #[macroquad::main(main_conf)]
 async fn main() {
     let mut runtime_configuration = RuntimeConfiguration {
-        theta: PI / 2.0,
+        theta: 0.0,
         delta_theta: 0.5,
         iterations: 1,
 
