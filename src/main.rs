@@ -12,7 +12,7 @@ use configurations::{l_system_configurations::{
 use l_system_drawing::l_system_drawing::get_l_system_lines;
 
 use macroquad::prelude::*;
-use ui::{input::handle_input, telemetry::{draw_custom_telemetry_data, CustomTelemetryData}};
+use ui::{colors::get_rainbow_color, input::handle_input, telemetry::{draw_custom_telemetry_data, CustomTelemetryData}};
 
 fn main_conf() -> Conf {
     Conf {
@@ -26,7 +26,7 @@ fn main_conf() -> Conf {
 async fn main() {
     let mut runtime_configuration = RuntimeConfiguration {
         theta: PI / 2.0,
-        delta_theta: 0.003,
+        delta_theta: 0.5,
         iterations: 1,
 
         color_percentage_offset: 0.0,
@@ -50,7 +50,7 @@ async fn main() {
 
         let time_start = SystemTime::now();
         let lines = get_l_system_lines(
-            get_preset_l_system_configuration(PresetLSystemConfiguration::Sierpinski),
+            get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
             runtime_configuration.theta,
             runtime_configuration.iterations
         );
@@ -86,9 +86,9 @@ async fn main() {
                 line[0].x, line[0].y,
                 line[1].x, line[1].y,
                 2.0,
-                Color { r, g, b, a: 1.0 },
+                // Color { r, g, b, a: 1.0 },
                 // WHITE,
-                // get_rainbow_color(final_color_percentage)
+                get_rainbow_color(final_color_percentage)
             );
         }
         let for_loop_time = SystemTime::now().duration_since(time_start).unwrap().as_micros();
@@ -101,6 +101,7 @@ async fn main() {
             get_lines_time,
             for_loop_time,
             color_percentage_offset: runtime_configuration.color_percentage_offset,
+            num_lines: lines.len(),
         });
 
         next_frame().await;

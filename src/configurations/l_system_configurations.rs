@@ -9,10 +9,40 @@ pub struct LSystemConfiguration<'a> {
 }
 
 #[allow(dead_code)]
-pub enum PresetLSystemConfiguration { Sierpinski, Hilbert, Tree, Koch, My1, My2, My3, My4, My5, My6, My7 }
+pub enum PresetLSystemConfiguration {
+    DragonCurve, BinaryTree, FractalPlant, Sierpinski, Hilbert, Tree, Koch,
+    My1, My2, My3, My4, My5, My6, My7
+}
 
 pub fn get_preset_l_system_configuration<'a>(config: PresetLSystemConfiguration) -> LSystemConfiguration<'a> {
     match config {
+        PresetLSystemConfiguration::DragonCurve => {
+            return LSystemConfiguration {
+                axiom: "F",
+                replacement_rules: vec![
+                    ReplacementRule { from: 'F', to: "F+G" },
+                    ReplacementRule { from: 'G', to: "F-G" }
+                ]
+            }
+        }
+        PresetLSystemConfiguration::BinaryTree => {
+            return LSystemConfiguration {
+                axiom: "F",
+                replacement_rules: vec![
+                    ReplacementRule { from: 'F', to: "G[-F]+F" },
+                    ReplacementRule { from: 'G', to: "GG" }
+                ]
+            }
+        }
+        PresetLSystemConfiguration::FractalPlant => {
+            return LSystemConfiguration {
+                axiom: "-X",
+                replacement_rules: vec![
+                    ReplacementRule { from: 'X', to: "F+[[X]-X]-F[-FX]+X" },
+                    ReplacementRule { from: 'F', to: "FF" }
+                ]
+            }
+        }
         PresetLSystemConfiguration::Sierpinski => {
             return LSystemConfiguration {
                 axiom: "F",

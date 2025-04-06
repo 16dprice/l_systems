@@ -6,7 +6,8 @@ pub struct CustomTelemetryData {
     pub iterations: usize,
     pub get_lines_time: u128,
     pub for_loop_time: u128,
-    pub color_percentage_offset: f32
+    pub color_percentage_offset: f32,
+    pub num_lines: usize,
 }
 
 pub fn draw_custom_telemetry_data(custom_telemetry_data: CustomTelemetryData) {
@@ -17,6 +18,7 @@ pub fn draw_custom_telemetry_data(custom_telemetry_data: CustomTelemetryData) {
     draw_text(format!("iterations: {}", custom_telemetry_data.iterations).as_str(), 0.0, 120.0, 30.0, WHITE);
 
     draw_text(format!("lines time: {}", custom_telemetry_data.get_lines_time).as_str(), 0.0, 150.0, 30.0, WHITE);
-    draw_text(format!("for loop time: {}", custom_telemetry_data.for_loop_time).as_str(), 0.0, 180.0, 30.0, WHITE);
-    draw_text(format!("color percentage offset: {}", custom_telemetry_data.color_percentage_offset).as_str(), 0.0, 210.0, 30.0, WHITE);
+    draw_text(format!("num lines: {}", custom_telemetry_data.num_lines).as_str(), 0.0, 180.0, 30.0, WHITE);
+    draw_text(format!("for loop time: {}", custom_telemetry_data.for_loop_time).as_str(), 0.0, 210.0, 30.0, WHITE);
+    draw_text(format!("color percentage offset: {}", custom_telemetry_data.color_percentage_offset).as_str(), 0.0, 240.0, 30.0, WHITE);
 }
