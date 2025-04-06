@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug L-Systems",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=l-systems",
+                    "--package=l-systems"
+                ]
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+} 
