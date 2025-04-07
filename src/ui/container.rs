@@ -2,15 +2,14 @@ use std::f32::consts::PI;
 
 use macroquad::prelude::*;
 
-pub fn draw_container() {
-    // thickness is also corner radius
-    let thickness = 10.0;
-    let width = 500.0;
-    let height = 300.0;
-    let x_offset = 0.0;
-    let y_offset = 0.0;
-    let resolution = 10;
-
+pub fn draw_container(
+    width: f32,
+    height: f32,
+    x_offset: f32,
+    y_offset: f32,
+    thickness: f32, // thickness is also corner radius
+    corner_resolution: u32,
+) {
     let vertices: [Vec2; 12] = [
         // idx 0
         vec2(
@@ -120,8 +119,8 @@ pub fn draw_container() {
         inner_corner_vertex: Vec2,
     | {
         let mut top_left_corner_points: Vec<Vec2> = vec![start_corner];
-        let theta_delta = (theta_1 - theta_0) / resolution as f32;
-        for i in 1..resolution {
+        let theta_delta = (theta_1 - theta_0) / corner_resolution as f32;
+        for i in 1..corner_resolution {
             let alpha = theta_0 + (i as f32) * theta_delta;
 
             let x = inner_corner_vertex.x + thickness * f32::cos(alpha);
