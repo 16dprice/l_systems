@@ -13,4 +13,7 @@ pub struct RuntimeConfiguration {
     pub camera_target: Vec2,
     pub camera_zoom: Vec2,
     pub camera_rotation: f32,
+
+    // Telemetry
+    pub show_telemetry: bool,
 }

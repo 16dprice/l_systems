@@ -12,7 +12,7 @@ use configurations::{l_system_configurations::{
 use l_system_drawing::l_system_drawing::get_l_system_lines;
 
 use macroquad::prelude::*;
-use ui::{colors::{get_rainbow_color, interpolate_colors}, input::handle_input, telemetry::{draw_custom_telemetry_data, CustomTelemetryData}};
+use ui::{colors::{get_rainbow_color, interpolate_colors}, container::draw_container, input::handle_input, telemetry::{draw_custom_telemetry_data, CustomTelemetryData}};
 
 fn main_conf() -> Conf {
     Conf {
@@ -33,7 +33,9 @@ async fn main() {
 
         camera_target: vec2(0.0, 0.0),
         camera_zoom: vec2(0.001, 0.001),
-        camera_rotation: 0.0
+        camera_rotation: 0.0,
+
+        show_telemetry: true,
     };
 
     loop {
@@ -50,7 +52,7 @@ async fn main() {
 
         let time_start = SystemTime::now();
         let lines = get_l_system_lines(
-            get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
+            get_preset_l_system_configuration(PresetLSystemConfiguration::Hilbert),
             runtime_configuration.theta,
             runtime_configuration.iterations
         );
@@ -71,8 +73,8 @@ async fn main() {
             let mut final_color_percentage = color_percentage + runtime_configuration.color_percentage_offset;
             while final_color_percentage > 1.0 { final_color_percentage -= 1.0; }
 
-            let line_color = interpolate_colors(BLUE, PINK, final_color_percentage);
-            // let line_color = get_rainbow_color(final_color_percentage);
+            // let line_color = interpolate_colors(BLUE, PINK, final_color_percentage);
+            let line_color = get_rainbow_color(final_color_percentage);
 
             draw_line(
                 line[0].x, line[0].y,
@@ -83,15 +85,20 @@ async fn main() {
         let for_loop_time = SystemTime::now().duration_since(time_start).unwrap().as_micros();
 
         set_default_camera();
-        draw_custom_telemetry_data(CustomTelemetryData {
-            theta: runtime_configuration.theta,
-            delta_theta: runtime_configuration.delta_theta,
-            iterations: runtime_configuration.iterations,
-            get_lines_time,
-            for_loop_time,
-            color_percentage_offset: runtime_configuration.color_percentage_offset,
-            num_lines: lines.len(),
-        });
+
+        if runtime_configuration.show_telemetry {
+            draw_container();
+
+            draw_custom_telemetry_data(CustomTelemetryData {
+                theta: runtime_configuration.theta,
+                delta_theta: runtime_configuration.delta_theta,
+                iterations: runtime_configuration.iterations,
+                get_lines_time,
+                for_loop_time,
+                color_percentage_offset: runtime_configuration.color_percentage_offset,
+                num_lines: lines.len(),
+            });
+        }
 
         next_frame().await;
     }

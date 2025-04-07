@@ -21,4 +21,6 @@ pub fn handle_input(runtime_configuration: &mut RuntimeConfiguration) {
     if is_key_down(KeyCode::O) { runtime_configuration.camera_zoom.x -= 0.006 / current_fps; runtime_configuration.camera_zoom.y -= 0.006 / current_fps; }
     if is_key_down(KeyCode::E) { runtime_configuration.camera_rotation -= 60.0 / current_fps; }
     if is_key_down(KeyCode::R) { runtime_configuration.camera_rotation += 60.0 / current_fps; }
+
+    if is_key_pressed(KeyCode::T) { runtime_configuration.show_telemetry = !runtime_configuration.show_telemetry; }
 }
