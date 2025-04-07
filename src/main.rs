@@ -2,17 +2,21 @@ mod configurations;
 mod l_system_drawing;
 mod ui;
 
-use std::f32::consts::PI;
 use std::time::SystemTime;
 
-use configurations::{l_system_configurations::{
-    get_preset_l_system_configuration,
-    PresetLSystemConfiguration
-}, runtime_configuration::RuntimeConfiguration};
+use configurations::{
+    l_system_configurations::{get_preset_l_system_configuration, PresetLSystemConfiguration},
+    runtime_configuration::RuntimeConfiguration
+};
 use l_system_drawing::l_system_drawing::get_l_system_lines;
 
 use macroquad::prelude::*;
-use ui::{colors::{get_rainbow_color, interpolate_colors}, container::draw_container, input::handle_input, telemetry::{draw_custom_telemetry_data, CustomTelemetryData}};
+use ui::{
+    colors::{get_rainbow_color, interpolate_colors},
+    container::draw_container,
+    input::handle_input,
+    telemetry::{draw_custom_telemetry_data, CustomTelemetryData}
+};
 
 fn main_conf() -> Conf {
     Conf {

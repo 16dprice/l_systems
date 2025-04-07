@@ -7,8 +7,8 @@ pub fn handle_input(runtime_configuration: &mut RuntimeConfiguration) {
 
     if is_key_down(KeyCode::Right) { runtime_configuration.theta += runtime_configuration.delta_theta / current_fps; }
     if is_key_down(KeyCode::Left) { runtime_configuration.theta -= runtime_configuration.delta_theta / current_fps; }
-    if is_key_down(KeyCode::Up) { runtime_configuration.delta_theta += 0.006 / current_fps; }
-    if is_key_down(KeyCode::Down) { runtime_configuration.delta_theta -= 0.006 / current_fps; }
+    if is_key_down(KeyCode::Up) { runtime_configuration.delta_theta += 0.06 / current_fps; }
+    if is_key_down(KeyCode::Down) { runtime_configuration.delta_theta -= 0.06 / current_fps; }
 
     if is_key_pressed(KeyCode::RightBracket) { runtime_configuration.iterations += 1; }
     if is_key_pressed(KeyCode::LeftBracket) { if runtime_configuration.iterations > 1 { runtime_configuration.iterations -= 1; } }
