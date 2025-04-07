@@ -55,12 +55,12 @@ async fn main() {
 
         render_lines_to_png(
             &lines,
-            60.0,
-            &mut runtime_configuration,
+            &runtime_configuration,
             format!("./data/first_movie/frame_{:0>5}.png", frame).as_str()
         );
 
         runtime_configuration.theta = (theta_bounds.1 - theta_bounds.0) * ((frame + 1) as f32 / 300.0) + theta_bounds.0;
+        runtime_configuration.color_percentage_offset = frame as f32 / 300.0;
 
         println!("Finished Frame: {}", frame);
     }

@@ -2,7 +2,7 @@ use macroquad::prelude::*;
 
 use crate::{configurations::runtime_configuration::RuntimeConfiguration, ui::colors::get_rainbow_color};
 
-pub fn render_lines_to_png(lines: &Vec<[Vec2; 2]>, current_fps: f32, runtime_configuration: &mut RuntimeConfiguration, png_path: &str) {
+pub fn render_lines_to_png(lines: &Vec<[Vec2; 2]>, runtime_configuration: &RuntimeConfiguration, png_path: &str) {
     let (width, height) = (3840, 2160);
     let render_target = render_target(width, height);
     render_target.texture.set_filter(FilterMode::Nearest);
@@ -34,12 +34,6 @@ pub fn render_lines_to_png(lines: &Vec<[Vec2; 2]>, current_fps: f32, runtime_con
             2.0, line_color,
         );
     }
-
-    // it should get to one every 5 * fps frames
-    // so if there's 300 frames, it should increase at 1/300 every frame
-    // so delta = 1 / (5 * fps)
-    runtime_configuration.color_percentage_offset += 1.0 / (5.0 * current_fps as f32);
-    if runtime_configuration.color_percentage_offset >= 1.0 { runtime_configuration.color_percentage_offset = 0.0; }
 
     set_default_camera();
 
