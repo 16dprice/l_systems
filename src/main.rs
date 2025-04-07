@@ -46,53 +46,53 @@ async fn main() {
         show_telemetry: true,
     };
 
-    for frame in 0..300 {
+    // for frame in 0..300 {
+    //     let lines = get_l_system_lines(
+    //         get_preset_l_system_configuration(PresetLSystemConfiguration::Hilbert),
+    //         runtime_configuration.theta,
+    //         runtime_configuration.iterations
+    //     );
+
+    //     render_lines_to_png(
+    //         &lines,
+    //         &runtime_configuration,
+    //         format!("./data/first_movie/frame_{:0>5}.png", frame).as_str()
+    //     );
+
+    //     runtime_configuration.theta = (theta_bounds.1 - theta_bounds.0) * ((frame + 1) as f32 / 300.0) + theta_bounds.0;
+    //     runtime_configuration.color_percentage_offset = frame as f32 / 300.0;
+
+    //     println!("Finished Frame: {}", frame);
+    // }
+    
+    // ffmpeg -framerate 60 -i frame_%05d.png -c:v libx264 -pix_fmt yuv420p ../output.mp4
+
+    loop {
+        clear_background(BLACK);
+
+        handle_input(&mut runtime_configuration);
+
+        set_camera(&Camera2D {
+            target: runtime_configuration.camera_target,
+            zoom: runtime_configuration.camera_zoom,
+            rotation: runtime_configuration.camera_rotation,
+            ..Default::default()
+        });
+
         let lines = get_l_system_lines(
-            get_preset_l_system_configuration(PresetLSystemConfiguration::Hilbert),
+            get_preset_l_system_configuration(PresetLSystemConfiguration::Crystal),
             runtime_configuration.theta,
             runtime_configuration.iterations
         );
 
-        render_lines_to_png(
-            &lines,
-            &runtime_configuration,
-            format!("./data/first_movie/frame_{:0>5}.png", frame).as_str()
-        );
+        render_lines_to_screen(&lines, get_fps() as f32, &mut runtime_configuration);
 
-        runtime_configuration.theta = (theta_bounds.1 - theta_bounds.0) * ((frame + 1) as f32 / 300.0) + theta_bounds.0;
-        runtime_configuration.color_percentage_offset = frame as f32 / 300.0;
+        set_default_camera();
 
-        println!("Finished Frame: {}", frame);
+        if runtime_configuration.show_telemetry {
+            render_telemetry_to_screen(&runtime_configuration, lines.len());
+        }
+
+        next_frame().await;
     }
-    
-    // ffmpeg -framerate 60 -i frame_%05d.png -c:v libx264 -pix_fmt yuv420p ../output.mp4
-
-    // loop {
-    //     clear_background(BLACK);
-
-    //     handle_input(&mut runtime_configuration);
-
-    //     set_camera(&Camera2D {
-    //         target: runtime_configuration.camera_target,
-    //         zoom: runtime_configuration.camera_zoom,
-    //         rotation: runtime_configuration.camera_rotation,
-    //         ..Default::default()
-    //     });
-
-        // let lines = get_l_system_lines(
-        //     get_preset_l_system_configuration(PresetLSystemConfiguration::Hilbert),
-        //     runtime_configuration.theta,
-        //     runtime_configuration.iterations
-        // );
-
-    //     render_lines_to_screen(&lines, get_fps() as f32, &mut runtime_configuration);
-
-    //     set_default_camera();
-
-    //     if runtime_configuration.show_telemetry {
-    //         render_telemetry_to_screen(&runtime_configuration, lines.len());
-    //     }
-
-    //     next_frame().await;
-    // }
 }
