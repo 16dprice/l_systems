@@ -67,6 +67,9 @@ async fn main() {
     
     // ffmpeg -framerate 60 -i frame_%05d.png -c:v libx264 -pix_fmt yuv420p ../output.mp4
 
+    // let font = load_ttf_font("/Users/djprice/Downloads/the-confession-fonts/TheConfessionFullRegular-8qGz.ttf").await.unwrap();
+    let font = load_ttf_font("/Users/djprice/Downloads/neo-euler-font/NeoEuler-VGO00.otf").await.unwrap();
+
     loop {
         clear_background(BLACK);
 
@@ -80,7 +83,7 @@ async fn main() {
         });
 
         let lines = get_l_system_lines(
-            get_preset_l_system_configuration(PresetLSystemConfiguration::Crystal),
+            get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
             runtime_configuration.theta,
             runtime_configuration.iterations
         );
@@ -92,6 +95,23 @@ async fn main() {
         if runtime_configuration.show_telemetry {
             render_telemetry_to_screen(&runtime_configuration, lines.len());
         }
+
+        draw_text_ex(
+            "The Quick Brown Fox", 100.0, 100.0, TextParams {
+                font: Some(&font),
+                font_size: 40,
+                color: WHITE,
+                ..Default::default()
+            }
+        );
+        draw_text_ex(
+            "Jumps Over The Lazy Dog", 100.0, 140.0, TextParams {
+                font: Some(&font),
+                font_size: 40,
+                color: WHITE,
+                ..Default::default()
+            }
+        );
 
         next_frame().await;
     }

@@ -9,10 +9,8 @@ use macroquad::{
 };
 
 pub fn render_lines_to_screen(lines: &Vec<[Vec2; 2]>, current_fps: f32, runtime_configuration: &mut RuntimeConfiguration) {
-    // it should get to one every 5 * fps frames
-    // so if there's 300 frames, it should increase at 1/300 every frame
-    // so delta = 1 / (5 * fps)
-    runtime_configuration.color_percentage_offset += 1.0 / (5.0 * current_fps as f32);
+    // it should get to one every 20 seconds
+    runtime_configuration.color_percentage_offset += 1.0 / (20.0 * current_fps as f32);
     if runtime_configuration.color_percentage_offset >= 1.0 { runtime_configuration.color_percentage_offset = 0.0; }
 
     for idx in 0..lines.len() {
