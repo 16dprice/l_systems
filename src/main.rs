@@ -3,6 +3,7 @@ mod l_system_drawing;
 mod ui;
 mod rendering;
 
+use core::num;
 use std::f32::consts::PI;
 
 use configurations::{
@@ -15,7 +16,7 @@ use ui::{
     colors::{get_rainbow_color, interpolate_colors},
     container::draw_container,
     input::handle_input,
-    telemetry::{draw_custom_telemetry_data, CustomTelemetryData}
+    telemetry::{draw_custom_telemetry_data, CustomTelemetryData}, text::draw_percentage_text_ex
 };
 
 use macroquad::prelude::*;
@@ -46,6 +47,32 @@ async fn main() {
         show_telemetry: true,
     };
 
+    let font = load_ttf_font("/Users/djprice/Downloads/neo-euler-font/NeoEuler-VGO00.otf").await.unwrap();
+    let mut text_percentage = 0.0;
+
+    loop {
+        clear_background(BLACK);
+        
+        draw_text(format!("{}", text_percentage).as_str(), 100.0, 20.0, 20.0, WHITE);
+
+        if text_percentage < 1.0 {
+            text_percentage += get_frame_time() / 5.0;
+        }
+
+        draw_percentage_text_ex(
+            "The Quick Brown Fox Jumps Over The Lazy Dog",
+            0.0, 100.0, text_percentage,
+            TextParams {
+                font: Some(&font),
+                font_size: 20,
+                color: WHITE,
+                ..Default::default()
+            }
+        );
+
+        next_frame().await;
+    }
+
     // for frame in 0..300 {
     //     let lines = get_l_system_lines(
     //         get_preset_l_system_configuration(PresetLSystemConfiguration::Hilbert),
@@ -68,51 +95,51 @@ async fn main() {
     // ffmpeg -framerate 60 -i frame_%05d.png -c:v libx264 -pix_fmt yuv420p ../output.mp4
 
     // let font = load_ttf_font("/Users/djprice/Downloads/the-confession-fonts/TheConfessionFullRegular-8qGz.ttf").await.unwrap();
-    let font = load_ttf_font("/Users/djprice/Downloads/neo-euler-font/NeoEuler-VGO00.otf").await.unwrap();
+    // let font = load_ttf_font("/Users/djprice/Downloads/neo-euler-font/NeoEuler-VGO00.otf").await.unwrap();
 
-    loop {
-        clear_background(BLACK);
+    // loop {
+    //     clear_background(BLACK);
 
-        handle_input(&mut runtime_configuration);
+    //     handle_input(&mut runtime_configuration);
 
-        set_camera(&Camera2D {
-            target: runtime_configuration.camera_target,
-            zoom: runtime_configuration.camera_zoom,
-            rotation: runtime_configuration.camera_rotation,
-            ..Default::default()
-        });
+    //     set_camera(&Camera2D {
+    //         target: runtime_configuration.camera_target,
+    //         zoom: runtime_configuration.camera_zoom,
+    //         rotation: runtime_configuration.camera_rotation,
+    //         ..Default::default()
+    //     });
 
-        let lines = get_l_system_lines(
-            get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
-            runtime_configuration.theta,
-            runtime_configuration.iterations
-        );
+    //     let lines = get_l_system_lines(
+    //         get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
+    //         runtime_configuration.theta,
+    //         runtime_configuration.iterations
+    //     );
 
-        render_lines_to_screen(&lines, get_fps() as f32, &mut runtime_configuration);
+    //     render_lines_to_screen(&lines, get_fps() as f32, &mut runtime_configuration);
 
-        set_default_camera();
+    //     set_default_camera();
 
-        if runtime_configuration.show_telemetry {
-            render_telemetry_to_screen(&runtime_configuration, lines.len());
-        }
+    //     if runtime_configuration.show_telemetry {
+    //         render_telemetry_to_screen(&runtime_configuration, lines.len());
+    //     }
 
-        draw_text_ex(
-            "The Quick Brown Fox", 100.0, 100.0, TextParams {
-                font: Some(&font),
-                font_size: 40,
-                color: WHITE,
-                ..Default::default()
-            }
-        );
-        draw_text_ex(
-            "Jumps Over The Lazy Dog", 100.0, 140.0, TextParams {
-                font: Some(&font),
-                font_size: 40,
-                color: WHITE,
-                ..Default::default()
-            }
-        );
+        // draw_text_ex(
+        //     "The Quick Brown Fox", 100.0, 100.0, TextParams {
+        //         font: Some(&font),
+        //         font_size: 40,
+        //         color: WHITE,
+        //         ..Default::default()
+        //     }
+        // );
+    //     draw_text_ex(
+    //         "Jumps Over The Lazy Dog", 100.0, 140.0, TextParams {
+    //             font: Some(&font),
+    //             font_size: 40,
+    //             color: WHITE,
+    //             ..Default::default()
+    //         }
+    //     );
 
-        next_frame().await;
-    }
+    //     next_frame().await;
+    // }
 }
