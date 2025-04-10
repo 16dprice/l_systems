@@ -55,10 +55,7 @@ async fn main() {
         
         draw_text(format!("{}", text_percentage).as_str(), 100.0, 20.0, 20.0, WHITE);
 
-        if text_percentage < 1.0 {
-            text_percentage += get_frame_time() / 5.0;
-        }
-
+        text_percentage += get_frame_time() / 3.0;
         draw_percentage_text_ex(
             "The Quick Brown Fox Jumps Over The Lazy Dog",
             0.0, 100.0, text_percentage,
