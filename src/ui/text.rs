@@ -5,7 +5,7 @@ use macroquad::{
 
 pub fn draw_percentage_text_ex(
     text: &str, x: f32, y: f32, percentage: f32, params: TextParams
-) {
+) -> f32 {
     let num_text_chars = text.chars().count() as f32;
     let lag = 5.0;
     let mut next_x_offset = x;
@@ -38,4 +38,6 @@ pub fn draw_percentage_text_ex(
             }
         }
     }
+
+    return next_x_offset;
 }

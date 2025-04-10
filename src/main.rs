@@ -2,6 +2,8 @@ mod configurations;
 mod l_system_drawing;
 mod ui;
 mod rendering;
+mod animation;
+mod examples;
 
 use core::num;
 use std::f32::consts::PI;
@@ -21,6 +23,119 @@ use ui::{
 
 use macroquad::prelude::*;
 
+struct PercentageTextDrawingParams<'a, 'b> {
+    text: &'b str,
+    percentage: f32,
+    x: f32,
+    y: f32,
+    font_size: u16,
+    font: Option<&'a Font>,
+    color: Color
+}
+
+async fn do_some_drawing() {
+    let mut axiom_text_percentage = 0.0;
+    let mut f_text_percentage = 0.0;
+    let mut constants_text_percentage = 0.0;
+    let mut plus_minus_text_percentage = 0.0;
+    let mut production_rule_text_percentage = 0.0;
+    let mut rule_text_percentage = 0.0;
+
+    let font = load_ttf_font("./fonts/euler.otf").await.unwrap();
+
+    let mut axiom_text_params = PercentageTextDrawingParams {
+        text: "axiom: ",
+        percentage: 0.0,
+        x: 10.0,
+        y: 50.0,
+        font_size: 40,
+        font: Some(&font),
+        color: WHITE
+    };
+
+    loop {
+        clear_background(BLACK);
+
+        axiom_text_percentage += get_frame_time() / 2.0;
+        if axiom_text_percentage > 1.0 { f_text_percentage += get_frame_time() / 0.2; }
+        if f_text_percentage > 1.0 { constants_text_percentage += get_frame_time() / 2.0; }
+        if constants_text_percentage > 1.0 { plus_minus_text_percentage += get_frame_time() / 0.5; }
+        if plus_minus_text_percentage > 1.0 { production_rule_text_percentage += get_frame_time() / 2.0; }
+        if production_rule_text_percentage > 1.0 { rule_text_percentage += get_frame_time() / 2.0; }
+
+        let axiom_next_x_offset = draw_percentage_text_ex(
+            "axiom: ",
+            10.0, 50.0,
+            axiom_text_percentage,
+            TextParams {
+                font_size: 40,
+                font: Some(&font),
+                color: WHITE,
+                ..Default::default()
+            }
+        );
+        draw_percentage_text_ex(
+            "F",
+            axiom_next_x_offset, 50.0,
+            f_text_percentage,
+            TextParams {
+                font_size: 40,
+                font: Some(&font),
+                color: GREEN,
+                ..Default::default()
+            }
+        );
+
+        let constants_next_x_offset = draw_percentage_text_ex(
+            "constants: ",
+            10.0, 90.0,
+            constants_text_percentage,
+            TextParams {
+                font_size: 40,
+                font: Some(&font),
+                color: WHITE,
+                ..Default::default()
+            }
+        );
+        draw_percentage_text_ex(
+            "+, -",
+            constants_next_x_offset, 90.0,
+            plus_minus_text_percentage,
+            TextParams {
+                font_size: 40,
+                font: Some(&font),
+                color: RED,
+                ..Default::default()
+            }
+        );
+
+        let production_rule_next_x_offset = draw_percentage_text_ex(
+            "production rule: ",
+            10.0, 130.0,
+            production_rule_text_percentage,
+            TextParams {
+                font_size: 40,
+                font: Some(&font),
+                color: WHITE,
+                ..Default::default()
+            }
+        );
+        draw_percentage_text_ex(
+            "F -> F - F + F + F - F",
+            production_rule_next_x_offset, 130.0,
+            rule_text_percentage,
+            TextParams {
+                font_size: 40,
+                font: Some(&font),
+                color: BLUE,
+                ..Default::default()
+            }
+        );
+        
+        next_frame().await;
+    }
+}
+
 fn main_conf() -> Conf {
     Conf {
         fullscreen: false,
@@ -31,126 +146,5 @@ fn main_conf() -> Conf {
 
 #[macroquad::main(main_conf)]
 async fn main() {
-    let theta_bounds = (0.0, PI / 2.0);
-
-    let mut runtime_configuration = RuntimeConfiguration {
-        theta: theta_bounds.0,
-        delta_theta: 0.5,
-        iterations: 6,
-
-        color_percentage_offset: 0.0,
-
-        camera_target: vec2(0.0, 0.0),
-        camera_zoom: vec2(0.003, 0.003),
-        camera_rotation: 0.0,
-
-        show_telemetry: true,
-    };
-
-    let font = load_ttf_font("./fonts/euler.otf").await.unwrap();
-    let mut first_text_percentage: f32 = 0.0;
-    let mut second_text_percentage: f32 = 0.0;
-
-    loop {
-        clear_background(BLACK);
-        
-        draw_text(format!("{:.02}", first_text_percentage).as_str(), 100.0, 20.0, 20.0, WHITE);
-        draw_text(format!("{:.02}", second_text_percentage).as_str(), 100.0, 40.0, 20.0, WHITE);
-
-        first_text_percentage += get_frame_time() / 3.0;
-        if first_text_percentage > 1.0 { second_text_percentage += get_frame_time() / 3.0; }
-
-        draw_percentage_text_ex(
-            "The Quick Brown Fox Jumps Over The Lazy Dog",
-            0.0, 100.0, first_text_percentage,
-            TextParams {
-                font: Some(&font),
-                font_size: 20,
-                color: WHITE,
-                ..Default::default()
-            }
-        );
-        draw_percentage_text_ex(
-            "Welcome to learning about math!",
-            0.0, 120.0, second_text_percentage,
-            TextParams {
-                font: Some(&font),
-                font_size: 20,
-                color: WHITE,
-                ..Default::default()
-            }
-        );
-
-        next_frame().await;
-    }
-
-    // for frame in 0..300 {
-    //     let lines = get_l_system_lines(
-    //         get_preset_l_system_configuration(PresetLSystemConfiguration::Hilbert),
-    //         runtime_configuration.theta,
-    //         runtime_configuration.iterations
-    //     );
-
-    //     render_lines_to_png(
-    //         &lines,
-    //         &runtime_configuration,
-    //         format!("./data/first_movie/frame_{:0>5}.png", frame).as_str()
-    //     );
-
-    //     runtime_configuration.theta = (theta_bounds.1 - theta_bounds.0) * ((frame + 1) as f32 / 300.0) + theta_bounds.0;
-    //     runtime_configuration.color_percentage_offset = frame as f32 / 300.0;
-
-    //     println!("Finished Frame: {}", frame);
-    // }
-    
-    // ffmpeg -framerate 60 -i frame_%05d.png -c:v libx264 -pix_fmt yuv420p ../output.mp4
-
-    // let font = load_ttf_font("/Users/djprice/Downloads/the-confession-fonts/TheConfessionFullRegular-8qGz.ttf").await.unwrap();
-    // let font = load_ttf_font("/Users/djprice/Downloads/neo-euler-font/NeoEuler-VGO00.otf").await.unwrap();
-
-    // loop {
-    //     clear_background(BLACK);
-
-    //     handle_input(&mut runtime_configuration);
-
-    //     set_camera(&Camera2D {
-    //         target: runtime_configuration.camera_target,
-    //         zoom: runtime_configuration.camera_zoom,
-    //         rotation: runtime_configuration.camera_rotation,
-    //         ..Default::default()
-    //     });
-
-    //     let lines = get_l_system_lines(
-    //         get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
-    //         runtime_configuration.theta,
-    //         runtime_configuration.iterations
-    //     );
-
-    //     render_lines_to_screen(&lines, get_fps() as f32, &mut runtime_configuration);
-
-    //     set_default_camera();
-
-    //     if runtime_configuration.show_telemetry {
-    //         render_telemetry_to_screen(&runtime_configuration, lines.len());
-    //     }
-
-        // draw_text_ex(
-        //     "The Quick Brown Fox", 100.0, 100.0, TextParams {
-        //         font: Some(&font),
-        //         font_size: 40,
-        //         color: WHITE,
-        //         ..Default::default()
-        //     }
-        // );
-    //     draw_text_ex(
-    //         "Jumps Over The Lazy Dog", 100.0, 140.0, TextParams {
-    //             font: Some(&font),
-    //             font_size: 40,
-    //             color: WHITE,
-    //             ..Default::default()
-    //         }
-    //     );
-
-    //     next_frame().await;
-    // }
+    do_some_drawing().await;
 }
