@@ -47,18 +47,32 @@ async fn main() {
         show_telemetry: true,
     };
 
-    let font = load_ttf_font("/Users/djprice/Downloads/neo-euler-font/NeoEuler-VGO00.otf").await.unwrap();
-    let mut text_percentage = 0.0;
+    let font = load_ttf_font("./fonts/euler.otf").await.unwrap();
+    let mut first_text_percentage: f32 = 0.0;
+    let mut second_text_percentage: f32 = 0.0;
 
     loop {
         clear_background(BLACK);
         
-        draw_text(format!("{}", text_percentage).as_str(), 100.0, 20.0, 20.0, WHITE);
+        draw_text(format!("{:.02}", first_text_percentage).as_str(), 100.0, 20.0, 20.0, WHITE);
+        draw_text(format!("{:.02}", second_text_percentage).as_str(), 100.0, 40.0, 20.0, WHITE);
 
-        text_percentage += get_frame_time() / 3.0;
+        first_text_percentage += get_frame_time() / 3.0;
+        if first_text_percentage > 1.0 { second_text_percentage += get_frame_time() / 3.0; }
+
         draw_percentage_text_ex(
             "The Quick Brown Fox Jumps Over The Lazy Dog",
-            0.0, 100.0, text_percentage,
+            0.0, 100.0, first_text_percentage,
+            TextParams {
+                font: Some(&font),
+                font_size: 20,
+                color: WHITE,
+                ..Default::default()
+            }
+        );
+        draw_percentage_text_ex(
+            "Welcome to learning about math!",
+            0.0, 120.0, second_text_percentage,
             TextParams {
                 font: Some(&font),
                 font_size: 20,
