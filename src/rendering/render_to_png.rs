@@ -2,6 +2,28 @@ use macroquad::prelude::*;
 
 use crate::{configurations::runtime_configuration::RuntimeConfiguration, ui::colors::get_rainbow_color};
 
+pub enum Resolution {
+    Low,
+    Medium,
+    High,
+    Ultra,
+}
+
+pub fn create_render_target_and_set_camera(camera: &mut Camera2D, resolution: Resolution) -> RenderTarget {
+    let (width, height) = match resolution {
+        Resolution::Low => { (800, 600) },
+        _ => { (800, 600) }
+    };
+
+    let render_target = render_target(width, height);
+    render_target.texture.set_filter(FilterMode::Nearest);
+
+    camera.render_target = Some(render_target.clone());
+    set_camera(camera);
+
+    return render_target;
+}
+
 pub fn render_lines_to_png(lines: &Vec<[Vec2; 2]>, runtime_configuration: &RuntimeConfiguration, png_path: &str) {
     let (width, height) = (3840, 2160);
     let render_target = render_target(width, height);
