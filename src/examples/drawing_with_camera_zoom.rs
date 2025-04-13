@@ -9,6 +9,10 @@ pub async fn drawing_with_camera_zoom_example() {
         // of [-1, 1] in both the x and y axes
         // if zoom is zoom_x, zoom_y then the bounds are
         // [-1 / zoom_a, 1 / zoom_a] where zoom_a is zoom_x or zoom_y
+
+        // if zoom_x = 2.0 / screen_width() and zoom_y = 2.0 / screen_height()
+        // then the bounds will be [-screen_width() / 2.0, screen_width() / 2.0]
+        // for x and similar for y
         set_camera(&Camera2D {
             target: vec2(0.0, 0.0),
             zoom: vec2(zoom_x, zoom_y),

@@ -110,6 +110,15 @@ pub fn get_l_system_lines_from_string(l_string: &str, theta: f32) -> Vec<[Vec2; 
     let x_scale_factor = screen_width() / (x_bounds.1 - x_bounds.0);
     let y_scale_factor = screen_height() / (y_bounds.1 - y_bounds.0);
     let scale_factor = f32::min(x_scale_factor, y_scale_factor);
+
+    println!("{}", screen_width());
+    println!("{}", screen_height());
+
+    println!("{:?}", x_bounds);
+    println!("{:?}", y_bounds);
+
+    println!("{:?}", (x_bounds.0 * scale_factor, x_bounds.1 * scale_factor));
+    println!("{:?}", (y_bounds.0 * scale_factor, y_bounds.1 * scale_factor));
  
     for l in &mut lines {
         l[0].x *= scale_factor;

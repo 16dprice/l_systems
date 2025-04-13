@@ -7,11 +7,14 @@ pub enum Resolution {
     Medium,
     High,
     Ultra,
+    Custom((u32, u32))
 }
 
 pub fn create_render_target_and_set_camera(camera: &mut Camera2D, resolution: Resolution) -> RenderTarget {
     let (width, height) = match resolution {
         Resolution::Low => { (800, 600) },
+        Resolution::Ultra => { (3840, 2160) },
+        Resolution::Custom((width, height)) => { (width, height) }
         _ => { (800, 600) }
     };
 

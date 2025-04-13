@@ -14,69 +14,64 @@ use configurations::{
     runtime_configuration::RuntimeConfiguration
 };
 use l_system_drawing::l_system_drawing::get_l_system_lines;
-use rendering::{render_to_png::{create_render_target_and_set_camera, render_lines_to_png}, render_to_screen::{render_lines_to_screen, render_telemetry_to_screen}};
+use rendering::{render_to_png::{create_render_target_and_set_camera, render_lines_to_png, Resolution}, render_to_screen::{render_lines_to_screen, render_telemetry_to_screen}};
 use ui::{
     colors::{get_rainbow_color, interpolate_colors},
     container::draw_container,
     input::handle_input,
-    telemetry::{draw_custom_telemetry_data, CustomTelemetryData}, text::draw_percentage_text_ex
+    telemetry::{draw_custom_telemetry_data, CustomTelemetryData}, text::{draw_box_text_ex, draw_percentage_text_ex, BoxTextParams}
 };
 
 use macroquad::prelude::*;
 
 const BACKGROUND_COLOR: Color = color_u8!(0x18, 0x18, 0x18, 0xFF);
+const RESOLUTION: (i32, i32) = (800, 600);
+
 
 fn main_conf() -> Conf {
     Conf {
         fullscreen: false,
-        high_dpi: false,
+        high_dpi: true,
+        window_width: RESOLUTION.0,
+        window_height: RESOLUTION.1,
         ..Default::default()
     }
 }
 
+/**
+ * Want multiple things
+ * 1. function that will draw text in a bounding box and will scale text to fit in the box
+ *      i. should this func take in desired number of lines?
+ * 2. function that will draw text one character at a time over some certain period of time
+ * 3. function that does both
+ * 
+ * Task
+ * 1. Build out first function that draws in bounding box
+ * 2. Look at draw_percentage_text_ex and abstrac the functionality that can be abstracted
+ *      for getting the chars and the alpha values for the chars
+ */
+
 #[macroquad::main(main_conf)]
 async fn main() {
-    let mut camera = Camera2D {
-        target: vec2(0.0, 0.0),
-        zoom: vec2(0.001, 0.001),
-        rotation: 180.0,
-        ..Default::default()
-    };
-    let render_target = create_render_target_and_set_camera(
-        &mut camera,
-        rendering::render_to_png::Resolution::Low
-    );
+    let font = load_ttf_font("./fonts/euler.otf").await.unwrap();
 
-    for i in 0..60 {
-        clear_background(BACKGROUND_COLOR);
-
-    let lines = get_l_system_lines(
-        get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
-        0.1,
-        8
-    );
-
-    for idx in 0..lines.len() {
-        let line = &lines[idx];
-
-        let color_percentage = idx as f32 / lines.len() as f32;
-
-        // let mut final_color_percentage = color_percentage + runtime_configuration.color_percentage_offset;
-        // while final_color_percentage > 1.0 { final_color_percentage -= 1.0; }
-
-        // let line_color = interpolate_colors(BLUE, PINK, final_color_percentage);
-        let line_color = get_rainbow_color(color_percentage);
-
-        draw_line(
-            line[0].x, line[0].y,
-            line[1].x, line[1].y,
-            2.0, line_color,
+    loop {
+        draw_box_text_ex(
+            vec!["Some text that should go in a box", "some more text gin a box", "Some more text in a b"], 
+            10.0, 
+            100.0,
+            BoxTextParams {
+                max_font_size: 40,
+                max_width: 500.0,
+                vertical_gap: 10.0,
+                text_params: TextParams {
+                    font: Some(&font),
+                    color: WHITE,
+                    ..Default::default()
+                }
+            }
         );
-    }
-
-    set_default_camera();
-
-    let image = render_target.texture.get_texture_data();
-    image.export_png("./output/video_0/animation_0/frames/frame_00000.png");
+        // return;
+        next_frame().await;
     }
 }
