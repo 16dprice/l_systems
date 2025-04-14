@@ -54,8 +54,11 @@ fn main_conf() -> Conf {
 #[macroquad::main(main_conf)]
 async fn main() {
     let font = load_ttf_font("./fonts/euler.otf").await.unwrap();
+    let mut text_percentage = 0.0;
 
     loop {
+        text_percentage += get_frame_time() / 10.0;
+
         draw_box_text_ex(
             vec!["Some text that should go in a box", "some more text gin a box", "Some more text in a b"], 
             10.0, 
@@ -64,6 +67,7 @@ async fn main() {
                 max_font_size: 40,
                 max_width: 500.0,
                 vertical_gap: 10.0,
+                percentage_to_draw: text_percentage,
                 text_params: TextParams {
                     font: Some(&font),
                     color: WHITE,
@@ -71,7 +75,7 @@ async fn main() {
                 }
             }
         );
-        // return;
+
         next_frame().await;
     }
 }

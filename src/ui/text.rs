@@ -47,6 +47,7 @@ pub struct BoxTextParams<'a> {
     pub max_width: f32,
     pub max_font_size: u16,
     pub vertical_gap: f32,
+    pub percentage_to_draw: f32,
     pub text_params: TextParams<'a>,
 }
 
@@ -75,16 +76,37 @@ pub fn draw_box_text_ex(
         if *fs < min_font_size { min_font_size = *fs; }
     }
 
+    let mut total_chars_in_all_lines = 0;
+    for l in &lines { total_chars_in_all_lines += (*l).chars().count(); }
+
     let mut y_offset = 0.0;
-    for l in lines {
-        let dimensions = draw_text_ex(
-            l,
+    let mut percentage_drawing_bounds = vec![(0.0, lines[0].chars().count() as f32 / total_chars_in_all_lines as f32)];
+    for (i, l) in lines.iter().enumerate() {
+        if i > 0 {
+            percentage_drawing_bounds.push(
+                (
+                    percentage_drawing_bounds[i - 1].1,
+                    percentage_drawing_bounds[i - 1].1 + ((*l).chars().count() as f32 / total_chars_in_all_lines as f32)
+                )
+            )
+        }
+
+        if params.percentage_to_draw < percentage_drawing_bounds[i].0 { continue; }
+
+        draw_percentage_text_ex(
+            *l,
             x, y + y_offset,
+            (
+                (params.percentage_to_draw - percentage_drawing_bounds[i].0) /
+                (percentage_drawing_bounds[i].1 - percentage_drawing_bounds[i].0)
+            ),
             TextParams {
                 font_size: min_font_size,
                 ..params.text_params
             }
         );
-        y_offset += dimensions.height + params.vertical_gap;
+        y_offset += measure_text(
+            *l, params.text_params.font, min_font_size, params.text_params.font_scale
+        ).height + params.vertical_gap;
     }
 }
