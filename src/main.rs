@@ -29,7 +29,6 @@ use macroquad::prelude::*;
 const BACKGROUND_COLOR: Color = color_u8!(0x18, 0x18, 0x18, 0xFF);
 const RESOLUTION: (i32, i32) = (800, 600);
 
-
 fn main_conf() -> Conf {
     Conf {
         fullscreen: false,
