@@ -6,10 +6,13 @@ use crate::{
             get_preset_l_system_configuration,
             PresetLSystemConfiguration
         },
-        runtime_configuration::RuntimeConfiguration
+        runtime_configuration::{self, RuntimeConfiguration}
     },
-    l_system_drawing::l_system_drawing::get_l_system_lines,
-    rendering::render_to_screen::render_lines_to_screen, 
+    l_system::{
+        LSystem,
+        ScaleParams
+    },
+    rendering::render_to_screen::render_lines_to_screen,
     ui::{
         container::draw_container,
         input::handle_input,
@@ -35,6 +38,17 @@ pub async fn full_rendering_lines() {
         show_telemetry: true,
     };
 
+    let mut l_system = LSystem {
+        iterations: runtime_configuration.iterations,
+        l_system_configuration: get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
+        theta: runtime_configuration.theta,
+        start_position: vec2(0.0, 0.0),
+        scale_params: ScaleParams {
+            width: screen_width(),
+            height: screen_height(),
+        }
+    };
+
     loop {
         clear_background(BLACK);
 
@@ -47,12 +61,10 @@ pub async fn full_rendering_lines() {
             ..Default::default()
         });
 
-        let lines = get_l_system_lines(
-            get_preset_l_system_configuration(PresetLSystemConfiguration::Hilbert),
-            runtime_configuration.theta,
-            runtime_configuration.iterations
-        );
+        l_system.theta = runtime_configuration.theta;
+        l_system.iterations = runtime_configuration.iterations;
 
+        let lines = l_system.get_lines();
         render_lines_to_screen(&lines, &runtime_configuration);
 
         set_default_camera();
