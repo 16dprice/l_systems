@@ -1,8 +1,10 @@
+#[derive(Clone)]
 pub struct ReplacementRule<'a> {
     pub from: char,
     pub to: &'a str,
 }
 
+#[derive(Clone)]
 pub struct LSystemConfiguration<'a> {
     pub axiom: &'a str,
     pub replacement_rules: Vec<ReplacementRule<'a>>,

@@ -40,10 +40,12 @@ pub async fn full_rendering_lines() {
 
     let mut l_system = LSystem {
         iterations: runtime_configuration.iterations,
-        l_system_configuration: get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
+        l_system_configuration: &get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
         theta: runtime_configuration.theta,
         start_position: vec2(0.0, 0.0),
         scale_params: ScaleParams {
+            translate: true,
+            scale: true,
             width: screen_width(),
             height: screen_height(),
         }

@@ -31,7 +31,7 @@ const RESOLUTION: (i32, i32) = (800, 600);
 
 fn main_conf() -> Conf {
     Conf {
-        fullscreen: false,
+        fullscreen: true,
         high_dpi: true,
         window_width: RESOLUTION.0,
         window_height: RESOLUTION.1,
@@ -45,7 +45,7 @@ async fn main() {
     let (width, height) = get_width_and_height_from_resolution(&resolution);
 
     let camera_target = vec2(0.0, 0.0);
-    let camera_zoom = vec2(2.0 / screen_width(), 2.0 / screen_height());
+    let camera_zoom = vec2(0.05 / screen_width(), 0.05 / screen_height());
     let desired_fps = 30;
     let total_seconds_of_video = 30;
 
@@ -56,16 +56,35 @@ async fn main() {
         ..Default::default()
     };
 
-    let mut l_system = LSystem {
-        iterations: 5,
-        l_system_configuration: get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
-        theta: 0.1,
-        start_position: vec2(0.0, 0.0),
+    let start_l_system = LSystem {
+        iterations: 6,
+        l_system_configuration: &get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
+        theta: 0.0,
+        start_position: vec2(0.0, screen_height()),
         scale_params: ScaleParams {
+            translate: false,
+            scale: false,
             width: width as f32,
             height: height as f32,
         }
     };
+
+    let end_l_system = LSystem {
+        iterations: 6,
+        l_system_configuration: &get_preset_l_system_configuration(PresetLSystemConfiguration::My3),
+        theta: PI / 5.0,
+        start_position: vec2(0.0, screen_height()),
+        scale_params: ScaleParams {
+            translate: false,
+            scale: false,
+            width: width as f32,
+            height: height as f32,
+        }
+    };
+
+    let mut percentage = 0.0;
+    let mut percentage_passed_1 = false;
+    let mut x = PI;
 
     // let progress_bar = ProgressBar::new(desired_fps * total_seconds_of_video);
 
@@ -73,28 +92,19 @@ async fn main() {
     loop {
         // theta from 0 to PI / 5.0
         // theta = (PI / 5.0) * ((frame + 1) as f32) / (desired_fps as f32 * total_seconds_of_video as f32);
+        x += (2.0 * PI * get_frame_time()) / 8.0;
+        percentage = 0.9 + 0.15 * f32::sin(x);
         
         // let render_target = create_render_target_and_set_camera(&mut camera, &resolution);
         clear_background(BACKGROUND_COLOR);
 
-        camera.zoom = vec2(2.0 / screen_width(), 2.0 / screen_height());
+        camera.zoom = vec2(1.0 / screen_width(), 1.0 / screen_height());
         set_camera(&camera);
 
-        let lines = l_system.get_lines();
-        for idx in 0..lines.len() {
-            let line = &lines[idx];
-            let color_percentage = idx as f32 / lines.len() as f32;
-            let line_color = get_rainbow_color(color_percentage);
-    
-            draw_line(
-                line[0].x, line[0].y,
-                line[1].x, line[1].y,
-                2.0, line_color,
-            );
-        }
+        LSystem::animate(&start_l_system, &end_l_system, percentage);
 
         set_default_camera();
-        
+
         // let image = render_target.texture.get_texture_data();
         // image.export_png(format!("./output/video_0/animation_1/frames/frame_{:>05}.png", frame).as_str());
 
