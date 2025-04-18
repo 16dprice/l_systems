@@ -25,7 +25,7 @@ struct LSystemStackValue {
 }
 
 impl<'a> LSystem<'a> {
-    pub fn animate(
+    pub fn animate_between(
         start: &LSystem,
         end: &LSystem,
         percentage: f32,
