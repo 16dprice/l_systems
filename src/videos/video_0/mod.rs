@@ -118,8 +118,11 @@ pub async fn render_animation_1(
 
     let mut drawable_text = DrawableText {
         lines: vec![
+            // V = { F, +, -, [, ] }
             "\u{1D415} = { \u{1D405}, +, \u{2212}, [, ] }",
+            // O = F
             "\u{1D40E} = \u{1D405}", // TODO: would be great to get actual lower case omega here
+            // P = { F -> F [ - F - F ] [ + F + F ] F }
             "\u{1D40F} = { \u{1D405} \u{2192} \u{1D405} [ \u{2212} \u{1D405} \u{2212} \u{1D405} ] [ + \u{1D405} + \u{1D405} ] \u{1D405} }"
         ],
         x: 300.0,
