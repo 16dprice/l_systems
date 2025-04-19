@@ -20,7 +20,7 @@ pub async fn render_animation_0(
     let (width, height) = get_width_and_height_from_resolution(&resolution);
 
     let desired_fps = 60;
-    let total_seconds_of_video = 30;
+    let total_seconds_of_video = 35;
 
     let mut camera = Camera2D {
         target: vec2(0.0, 0.0),
@@ -122,12 +122,12 @@ pub async fn render_animation_1(
 
     let mut drawable_text = DrawableText {
         lines: vec![
-            "V = { F, +, -, [, ] }",
-            "OMEGA = F",
-            "P = { F => F[-F-F][+F+F]F }"
+            "\u{1D415} = { \u{1D405}, +, \u{2212}, [, ] }",
+            "\u{1D40E} = \u{1D405}", // TODO: would be great to get actual lower case omega here
+            "\u{1D40F} = { \u{1D405} \u{2192} \u{1D405} [ \u{2212} \u{1D405} \u{2212} \u{1D405} ] [ + \u{1D405} + \u{1D405} ] \u{1D405} }"
         ],
-        x: 200.0,
-        y: 100.0,
+        x: 300.0,
+        y: 200.0,
         max_width: 100.0,
         max_font_size: 20,
         vertical_gap: 25.0,
@@ -139,7 +139,7 @@ pub async fn render_animation_1(
     };
 
     let desired_fps = 60;
-    let total_seconds_of_video = 5;
+    let total_seconds_of_video = 6;
 
     let mut handles = Vec::<
         (
@@ -173,6 +173,7 @@ pub async fn render_animation_1(
         handles.push((handle, tx));
     }
 
+    set_default_camera();
     for frame in start_frame..(start_frame + desired_fps * total_seconds_of_video) {
         clear_background(BACKGROUND_COLOR);
 

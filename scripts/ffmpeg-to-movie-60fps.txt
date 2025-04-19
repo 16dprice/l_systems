@@ -1,1 +1,11 @@
+// Basic template
 ffmpeg -framerate 60 -i frame_%05d.png -c:v libx264 -pix_fmt yuv420p <output-dir>
+
+// With horizontal flip
+ffmpeg -framerate 60 -i ./frames/frame_%05d.png -c:v libx264 -pix_fmt yuv420p -vf "hflip" <output-dir>
+
+// With vertical flip
+ffmpeg -framerate 60 -i ./frames/frame_%05d.png -c:v libx264 -pix_fmt yuv420p -vf "vflip" <output-dir>
+
+
+ffmpeg -framerate 60 -i ./frames/frame_%05d.png -c:v libx264 -pix_fmt yuv420p -vf "vflip" ./animation_0.mp4
