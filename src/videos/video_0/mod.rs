@@ -7,9 +7,10 @@ use std::thread::{self, JoinHandle};
 use indicatif::ProgressBar;
 use macroquad::{camera::{set_camera, set_default_camera, Camera2D}, color::WHITE, math::vec2, text::load_ttf_font, texture::{get_screen_data, Image}, window::{clear_background, next_frame, screen_height}};
 
+use crate::png::write_png;
 use crate::{configurations::l_system_configurations::{get_preset_l_system_configuration, PresetLSystemConfiguration}, l_system::{LSystem, ScaleParams}, rendering::render_to_png::{create_render_target_and_set_camera, get_width_and_height_from_resolution, Resolution}, text::DrawableText, BACKGROUND_COLOR};
 
-const ANIMATION_NUM_IO_THREADS: usize = 7;
+const ANIMATION_NUM_IO_THREADS: usize = 6;
 
 pub async fn render_animation_0(
     start_frame: u64,
@@ -59,8 +60,11 @@ pub async fn render_animation_0(
 
     let mut handles = Vec::<(JoinHandle<()>, Sender<Option<(Image, String)>>)>::new();
 
+    let progress_bar = Arc::new(Mutex::new(ProgressBar::new(desired_fps * total_seconds_of_video)));
     for i in 0..ANIMATION_NUM_IO_THREADS {
         let (tx, rx) = mpsc::channel::<Option<(Image, String)>>();
+        let progress_bar = Arc::clone(&progress_bar);
+        
         let handle = thread::spawn(move || {
             let mut is_running = true;
             while is_running {
@@ -68,8 +72,8 @@ pub async fn render_animation_0(
                     Ok(val) => {
                         match val {
                             Some((image, path)) => {
-                                println!("saving {} in thread {}", path, i);
-                                image.export_png(&path);
+                                progress_bar.lock().unwrap().inc(1);
+                                write_png(&image.bytes, image.width, image.height, &path);
                             }
                             None => { is_running = false; }
                         }
@@ -137,7 +141,12 @@ pub async fn render_animation_1(
     let desired_fps = 60;
     let total_seconds_of_video = 5;
 
-    let mut handles = Vec::<(JoinHandle<()>, Sender<Option<(Image, String)>>)>::new();
+    let mut handles = Vec::<
+        (
+            JoinHandle<()>,
+            Sender<Option<(Image, String)>>
+        )
+    >::new();
 
     let progress_bar = Arc::new(Mutex::new(ProgressBar::new(desired_fps * total_seconds_of_video)));
     for i in 0..ANIMATION_NUM_IO_THREADS {

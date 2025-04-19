@@ -1,14 +1,15 @@
 #![allow(unused)]
 mod configurations;
-mod ui;
-mod rendering;
 mod examples;
-mod videos;
+mod png;
 mod l_system;
+mod rendering;
 mod text;
+mod ui;
+mod videos;
 
 use core::num;
-use std::f32::consts::PI;
+use std::{f32::consts::PI, time::{Duration, SystemTime}};
 
 use configurations::{
     l_system_configurations::{get_preset_l_system_configuration, LSystemConfiguration, PresetLSystemConfiguration},
@@ -53,6 +54,6 @@ fn main_conf() -> Conf {
 
 #[macroquad::main(main_conf)]
 async fn main() {
-    // let next_start_frame = render_animation_0(0, "./output/video_0/animation_0/frames", &Resolution::Low).await;
+    let next_start_frame = render_animation_0(0, "./output/video_0/animation_0/frames", &Resolution::Low).await;
     let next_start_frame = render_animation_1(0, "./output/video_0/animation_1/frames", &Resolution::Low).await;
 }
