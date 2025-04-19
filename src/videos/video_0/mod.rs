@@ -25,12 +25,8 @@ pub async fn render_animation_0(
     let mut camera = Camera2D {
         target: vec2(0.0, 0.0),
         zoom: vec2(2.0 / width as f32, 2.0 / height as f32),
-        // rotation: 180.0,
         ..Default::default()
     };
-
-    let zoom_factor = 0.7;
-    let y = 600.0 / zoom_factor;
 
     let start_l_system = LSystem {
         iterations: 6,
