@@ -114,9 +114,7 @@ pub async fn render_animation_0(
 pub async fn render_animation_1(
     start_frame: u64,
     output_dir: &str,
-    resolution: &Resolution
 ) -> u64 {
-    let (width, height) = get_width_and_height_from_resolution(&resolution);
     let font = load_ttf_font("./fonts/euler.otf").await.unwrap();
 
     let mut drawable_text = DrawableText {
