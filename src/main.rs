@@ -54,6 +54,6 @@ fn main_conf() -> Conf {
 
 #[macroquad::main(main_conf)]
 async fn main() {
-    // let next_start_frame = render_animation_0(0, "./output/video_0/animation_0/frames", &Resolution::Ultra).await;
+    let next_start_frame = render_animation_0(0, "./output/video_0/animation_0/frames", &Resolution::Ultra).await;
     let next_start_frame = render_animation_1(0, "./output/video_0/animation_1/frames").await;
 }
