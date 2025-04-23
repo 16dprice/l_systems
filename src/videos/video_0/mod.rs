@@ -5,12 +5,13 @@ use std::sync::mpsc::{self, Sender};
 use std::thread::{self, JoinHandle};
 
 use indicatif::ProgressBar;
+use macroquad::texture::{draw_texture_ex, render_target, DrawTextureParams};
 use macroquad::{camera::{set_camera, set_default_camera, Camera2D}, color::WHITE, math::vec2, text::load_ttf_font, texture::{get_screen_data, Image}, window::{clear_background, next_frame, screen_height}};
 
 use crate::png::write_png;
 use crate::{configurations::l_system_configurations::{get_preset_l_system_configuration, PresetLSystemConfiguration}, l_system::{LSystem, ScaleParams}, rendering::render_to_png::{create_render_target_and_set_camera, get_width_and_height_from_resolution, Resolution}, text::DrawableText, BACKGROUND_COLOR};
 
-const ANIMATION_NUM_IO_THREADS: usize = 6;
+const ANIMATION_NUM_IO_THREADS: usize = 15;
 
 pub async fn render_animation_0(
     start_frame: u64,
@@ -22,7 +23,10 @@ pub async fn render_animation_0(
     let desired_fps = 60;
     let total_seconds_of_video = 35;
 
+    let render_target = render_target(width, height);
+
     let mut camera = Camera2D {
+        render_target: Some(render_target.clone()),
         target: vec2(0.0, 0.0),
         zoom: vec2(2.0 / width as f32, 2.0 / height as f32),
         ..Default::default()
@@ -83,27 +87,26 @@ pub async fn render_animation_0(
     }
 
     for frame in start_frame..(start_frame + desired_fps * total_seconds_of_video) {
-        clear_background(BACKGROUND_COLOR);
         set_camera(&camera);
+
+        clear_background(BACKGROUND_COLOR);
 
         let percentage = (frame + 1) as f32 / (start_frame + desired_fps * total_seconds_of_video) as f32;
 
         LSystem::animate_between(&start_l_system, &end_l_system, percentage);
 
-        let image = get_screen_data();
+        // setting default camera is necessary for some reason to get the texture data
+        set_default_camera();
+        let image = render_target.texture.get_texture_data();
+
         let current_handle = frame as usize % ANIMATION_NUM_IO_THREADS;
         handles[current_handle].1.send(Some((image, format!("{}/frame_{:>05}.png", output_dir, frame)))).unwrap();
 
         next_frame().await;
     }
 
-    for h in &handles {
-        h.1.send(None);
-    }
-    
-    for h in handles {
-        h.0.join();
-    }
+    for h in &handles { h.1.send(None); }
+    for h in handles { h.0.join(); }
 
     return start_frame + desired_fps * total_seconds_of_video;
 }
@@ -172,7 +175,6 @@ pub async fn render_animation_1(
         handles.push((handle, tx));
     }
 
-    set_default_camera();
     for frame in start_frame..(start_frame + desired_fps * total_seconds_of_video) {
         clear_background(BACKGROUND_COLOR);
 
@@ -186,13 +188,8 @@ pub async fn render_animation_1(
         next_frame().await;
     }
 
-    for h in &handles {
-        h.1.send(None);
-    }
-    
-    for h in handles {
-        h.0.join();
-    }
+    for h in &handles { h.1.send(None); }
+    for h in handles { h.0.join(); }
 
     return start_frame + desired_fps * total_seconds_of_video;
 }

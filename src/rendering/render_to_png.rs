@@ -13,6 +13,7 @@ pub enum Resolution {
 pub fn get_width_and_height_from_resolution(resolution: &Resolution) -> (u32, u32) {
     return match resolution {
         Resolution::Low => { (800, 600) },
+        Resolution::High => { (1920, 1080) },
         Resolution::Ultra => { (3840, 2160) },
         Resolution::Custom((width, height)) => { (*width, *height) }
         _ => { (800, 600) }
