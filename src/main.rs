@@ -39,6 +39,8 @@ use ui::{
 use macroquad::prelude::*;
 use videos::video_0::{render_animation_0, render_animation_1};
 
+use crate::examples::full_rendering_lines::full_rendering_lines;
+
 const BACKGROUND_COLOR: Color = color_u8!(0x18, 0x18, 0x18, 0xFF);
 const RESOLUTION: (i32, i32) = (800, 600);
 
@@ -54,6 +56,7 @@ fn main_conf() -> Conf {
 
 #[macroquad::main(main_conf)]
 async fn main() {
-    let next_start_frame = render_animation_0(0, "./output/video_0/animation_0/frames", &Resolution::Ultra).await;
-    let next_start_frame = render_animation_1(0, "./output/video_0/animation_1/frames").await;
+    // let next_start_frame = render_animation_0(0, "./output/video_0/animation_0/frames", &Resolution::Ultra).await;
+    // let next_start_frame = render_animation_1(0, "./output/video_0/animation_1/frames").await;
+    full_rendering_lines().await;
 }
